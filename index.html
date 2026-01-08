@@ -922,7 +922,7 @@
             top: 100px;
             z-index: 200;
             background: #000;
-            padding: 60px 40px 60px 40px;
+            padding: 48px 40px 28px 40px;
             margin: 0;
         }
 
@@ -936,18 +936,36 @@
 
         .faq-panels-wrapper {
             position: relative;
-            margin-top: 20px;
+            margin-top: 0;
         }
 
         .faq-panel {
             position: sticky;
-            top: 320px;
+            top: 240px;
             padding: 50px 40px 80px 40px;
             margin: 0;
-            margin-bottom: 40px;
+            margin-bottom: 0;
+            overflow: visible;
+            isolation: isolate;
             opacity: 0;
             transform: translateY(40px);
             transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .faq-panel::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: -240px;
+            background: inherit;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .faq-panel:not(:first-child) {
+            box-shadow: 0 -18px 36px rgba(0, 0, 0, 0.45);
         }
 
         .faq-panel.visible {
@@ -986,6 +1004,16 @@
         .faq-panel-content {
             max-width: 1400px;
             margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .faq-panel-body {
+            max-height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 12px;
+            scrollbar-gutter: stable both-edges;
         }
 
         .faq-panel-header {
@@ -1562,6 +1590,7 @@
                 <div class="faq-panel-header">
                     <div class="label">Core Architecture Questions</div>
                 </div>
+                <div class="faq-panel-body">
                 
                 <div class="faq-accordion-item">
                     <div class="faq-question">
@@ -1595,6 +1624,7 @@
                         <p>In realistic workloads, this lets capacity grow with available hardware instead of hitting a sequential bottleneck. The exact performance curve depends on your contracts and network topology.</p>
                     </div>
                 </div>
+                </div>
             </div><!-- end faq-panel-content -->
             </div>
             
@@ -1604,6 +1634,7 @@
                 <div class="faq-panel-header">
                     <div class="label">Developer-Focused Questions</div>
                 </div>
+                <div class="faq-panel-body">
                 
                 <div class="faq-accordion-item">
                     <div class="faq-question">
@@ -1648,6 +1679,7 @@
                         <p>Validators ensure that, even when thousands of agents act simultaneously, the resulting state transitions are consistent, auditable, and replayable.</p>
                     </div>
                 </div>
+                </div>
             </div><!-- end faq-panel-content -->
             </div>
             
@@ -1657,6 +1689,7 @@
                 <div class="faq-panel-header">
                     <div class="label">Client-Focused Questions</div>
                 </div>
+                <div class="faq-panel-body">
                 
                 <div class="faq-accordion-item">
                     <div class="faq-question">
@@ -1701,6 +1734,7 @@
                         <p>As confidence grows, you can migrate more processes into Rholang or connect additional services to the same global state. This keeps risk under control while providing blockchain-level guarantees where they matter most.</p>
                     </div>
                 </div>
+                </div>
             </div><!-- end faq-panel-content -->
             </div>
             
@@ -1710,6 +1744,7 @@
                 <div class="faq-panel-header">
                     <div class="label">Partner-Focused Questions</div>
                 </div>
+                <div class="faq-panel-body">
                 
                 <div class="faq-accordion-item">
                     <div class="faq-question">
@@ -1753,6 +1788,7 @@
                         <p>If you design architectures or implement complex systems for clients, F1R3FLY gives you a formal yet flexible backbone. You can capture business rules in Rholang contracts, wire them into existing APIs, and provide clients with clear evidence of system behavior.</p>
                         <p>As patterns repeat across engagements, you can turn them into reusable playbooks and offerings built around the F1R3FLY stack.</p>
                     </div>
+                </div>
                 </div>
             </div><!-- end faq-panel-content -->
             </div>
@@ -2199,21 +2235,116 @@
         window.addEventListener('scroll', updateActiveNav);
         window.addEventListener('load', updateActiveNav);
 
+        // FAQ panel spacing: ensure next panel offset respects expanded height
+        const faqPanels = Array.from(document.querySelectorAll('.faq-panel'));
+        const BASE_PANEL_SPACING = 0;
+        const collapsedPanelHeights = new WeakMap();
+
+        faqPanels.forEach(panel => {
+            collapsedPanelHeights.set(panel, panel.getBoundingClientRect().height);
+            panel.style.marginBottom = `${BASE_PANEL_SPACING}px`;
+        });
+
+        function updateFaqPanelHeights() {
+            faqPanels.forEach(panel => {
+                const panelStyles = getComputedStyle(panel);
+                const topOffset = parseInt(panelStyles.top, 10) || 0;
+                const paddingTop = parseInt(panelStyles.paddingTop, 10) || 0;
+                const paddingBottom = parseInt(panelStyles.paddingBottom, 10) || 0;
+                const availableHeight = Math.max(240, window.innerHeight - topOffset - 16);
+                const header = panel.querySelector('.faq-panel-header');
+                const body = panel.querySelector('.faq-panel-body');
+                const headerHeight = header ? header.getBoundingClientRect().height : 0;
+                if (body) {
+                    const bodyStyles = getComputedStyle(body);
+                    const bodyPaddingTop = parseInt(bodyStyles.paddingTop, 10) || 0;
+                    const bodyPaddingBottom = parseInt(bodyStyles.paddingBottom, 10) || 0;
+                    const maxBodyHeight = Math.max(120, availableHeight - paddingTop - paddingBottom - headerHeight - bodyPaddingTop - bodyPaddingBottom);
+                    body.style.maxHeight = `${maxBodyHeight}px`;
+                }
+            });
+        }
+
+        if (window.ResizeObserver) {
+            const panelResizeObserver = new ResizeObserver(entries => {
+                entries.forEach(entry => {
+                    const panel = entry.target;
+                    const collapsedHeight = collapsedPanelHeights.get(panel) || entry.contentRect.height;
+                    const extraHeight = Math.max(0, entry.contentRect.height - collapsedHeight);
+                    panel.style.marginBottom = `${BASE_PANEL_SPACING + extraHeight}px`;
+                });
+            });
+
+            faqPanels.forEach(panel => panelResizeObserver.observe(panel));
+        }
+
+        function updateFaqPanelSpacing() {
+            faqPanels.forEach(panel => {
+                const height = panel.getBoundingClientRect().height;
+                const collapsedHeight = collapsedPanelHeights.get(panel) || height;
+                const extraHeight = Math.max(0, height - collapsedHeight);
+                panel.style.marginBottom = `${BASE_PANEL_SPACING + extraHeight}px`;
+            });
+        }
+
+        window.addEventListener('resize', updateFaqPanelSpacing);
+        window.addEventListener('load', updateFaqPanelSpacing);
+        window.addEventListener('resize', updateFaqPanelHeights);
+        window.addEventListener('load', updateFaqPanelHeights);
+
         // FAQ Accordion functionality
         document.querySelectorAll('.faq-question').forEach(question => {
             question.addEventListener('click', () => {
                 const item = question.parentElement;
                 const wasOpen = item.classList.contains('open');
                 
-                // Close all items in the same panel
-                const panel = item.closest('.faq-panel');
-                panel.querySelectorAll('.faq-accordion-item').forEach(i => {
+                // Close all items across all panels to ensure only one open at a time
+                document.querySelectorAll('.faq-accordion-item').forEach(i => {
                     i.classList.remove('open');
                 });
                 
                 // Toggle the clicked item
                 if (!wasOpen) {
                     item.classList.add('open');
+                }
+
+                // Recalculate spacing so sticky panels respect expanded heights
+                setTimeout(updateFaqPanelSpacing, 350);
+                setTimeout(updateFaqPanelHeights, 350);
+            });
+        });
+
+        // Prevent page scroll while scrolling inside panel content until bottom is reached
+        function clampPanelScroll(event) {
+            const content = event.currentTarget;
+            const delta = event.deltaY;
+            const maxScroll = content.scrollHeight - content.clientHeight;
+            const topSpace = content.scrollTop;
+            const bottomSpace = maxScroll - content.scrollTop;
+
+            if (delta < 0 && topSpace > 0) {
+                event.preventDefault();
+                content.scrollTop = Math.max(0, content.scrollTop + delta);
+            } else if (delta > 0 && bottomSpace > 0) {
+                event.preventDefault();
+                content.scrollTop = Math.min(maxScroll, content.scrollTop + delta);
+            }
+        }
+
+        faqPanels.forEach(panel => {
+            const content = panel.querySelector('.faq-panel-body');
+            if (content) {
+                content.addEventListener('wheel', clampPanelScroll, { passive: false });
+            }
+        });
+
+        // Allow tapping anywhere in the answer text to close the accordion
+        document.querySelectorAll('.faq-answer-accordion').forEach(answer => {
+            answer.addEventListener('click', () => {
+                const item = answer.closest('.faq-accordion-item');
+                if (item && item.classList.contains('open')) {
+                    item.classList.remove('open');
+                    setTimeout(updateFaqPanelSpacing, 350);
                 }
             });
         });
