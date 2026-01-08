@@ -922,7 +922,7 @@
             top: 100px;
             z-index: 200;
             background: #000;
-            padding: 48px 40px 28px 40px;
+            padding: 48px 48px 28px 40px;
             margin: 0;
         }
 
@@ -937,6 +937,7 @@
         .faq-panels-wrapper {
             position: relative;
             margin-top: 0;
+            margin-bottom: 0;
         }
 
         .faq-panel {
@@ -944,7 +945,6 @@
             top: 240px;
             padding: 50px 40px 80px 40px;
             margin: 0;
-            margin-bottom: 0;
             overflow: visible;
             isolation: isolate;
             opacity: 0;
@@ -958,7 +958,6 @@
             left: 0;
             right: 0;
             top: 0;
-            bottom: -240px;
             background: inherit;
             z-index: -1;
             pointer-events: none;
@@ -1009,11 +1008,30 @@
         }
 
         .faq-panel-body {
-            max-height: 100%;
+            max-height: fit-content;
             overflow-y: auto;
             overflow-x: hidden;
-            padding-right: 12px;
+            margin-left: -100%;
+            margin-right: -100%;
+            padding-left: 100%;
+            padding-right: 100%;
             scrollbar-gutter: stable both-edges;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+            transition: box-shadow 0.2s ease;
+        }
+
+        .faq-panel-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .faq-panel-body::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .faq-panel-body::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
         }
 
         .faq-panel-header {
@@ -1022,20 +1040,20 @@
 
         .faq-panel-header .label {
             position: relative;
-            display: inline-block;
-            padding-right: 100%;
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+            padding-right: 0;
         }
 
         /* Cyan/teal gradient line after section label */
         .faq-panel-header .label::after {
             content: '';
-            position: absolute;
-            left: 100%;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 100vw;
+            display: block;
+            flex: 1;
             height: 1px;
-            margin-left: 20px;
+            min-width: 140px;
             background: linear-gradient(90deg, #03D5FF 0%, #00A693 50%, transparent 100%);
         }
 
@@ -2261,6 +2279,7 @@
                     const bodyPaddingBottom = parseInt(bodyStyles.paddingBottom, 10) || 0;
                     const maxBodyHeight = Math.max(120, availableHeight - paddingTop - paddingBottom - headerHeight - bodyPaddingTop - bodyPaddingBottom);
                     body.style.maxHeight = `${maxBodyHeight}px`;
+                    updatePanelShadow(body);
                 }
             });
         }
@@ -2297,14 +2316,11 @@
             question.addEventListener('click', () => {
                 const item = question.parentElement;
                 const wasOpen = item.classList.contains('open');
-                
-                // Close all items across all panels to ensure only one open at a time
-                document.querySelectorAll('.faq-accordion-item').forEach(i => {
-                    i.classList.remove('open');
-                });
-                
-                // Toggle the clicked item
-                if (!wasOpen) {
+
+                // Toggle only the clicked item, leave others untouched
+                if (wasOpen) {
+                    item.classList.remove('open');
+                } else {
                     item.classList.add('open');
                 }
 
@@ -2315,26 +2331,52 @@
         });
 
         // Prevent page scroll while scrolling inside panel content until bottom is reached
+        function updatePanelShadow(content) {
+            const maxScroll = content.scrollHeight - content.clientHeight;
+            const topSpace = content.scrollTop;
+            const bottomSpace = maxScroll - content.scrollTop;
+            const SHADOW_EPSILON = 8;
+            const shadows = [];
+
+            if (topSpace > SHADOW_EPSILON) {
+                shadows.push('inset 0 25px 16px -18px rgba(0, 0, 0, 0.15)');
+            }
+            if (bottomSpace > SHADOW_EPSILON) {
+                shadows.push('inset 0 -25px 16px -18px rgba(0, 0, 0, 0.15)');
+            }
+
+            content.style.boxShadow = shadows.join(', ');
+        }
+
         function clampPanelScroll(event) {
             const content = event.currentTarget;
             const delta = event.deltaY;
             const maxScroll = content.scrollHeight - content.clientHeight;
             const topSpace = content.scrollTop;
             const bottomSpace = maxScroll - content.scrollTop;
+            const EPSILON = 10;
+            const atTop = topSpace <= EPSILON;
+            const atBottom = bottomSpace <= EPSILON;
 
-            if (delta < 0 && topSpace > 0) {
+            // Only consume scroll while there is room inside the panel body.
+            if (delta < 0 && !atTop) {
                 event.preventDefault();
                 content.scrollTop = Math.max(0, content.scrollTop + delta);
-            } else if (delta > 0 && bottomSpace > 0) {
+            } else if (delta > 0 && !atBottom) {
                 event.preventDefault();
                 content.scrollTop = Math.min(maxScroll, content.scrollTop + delta);
             }
+
+            updatePanelShadow(content);
         }
 
         faqPanels.forEach(panel => {
             const content = panel.querySelector('.faq-panel-body');
             if (content) {
                 content.addEventListener('wheel', clampPanelScroll, { passive: false });
+                content.addEventListener('scroll', () => updatePanelShadow(content), { passive: true });
+                // Initialize shadows on load
+                updatePanelShadow(content);
             }
         });
 
