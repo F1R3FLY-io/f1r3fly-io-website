@@ -490,6 +490,20 @@ function ConformalCanons() {
 
   return (
     <div style={s.inner} ref={containerRef}>
+      {/* Back link */}
+      <a href="../index.html#brain-candy" style={{
+        display: "inline-block",
+        fontSize: 14,
+        color: "#6a6050",
+        textDecoration: "none",
+        marginBottom: 8,
+        fontFamily: "'Fira Code', monospace",
+        transition: "color 0.2s",
+      }}
+        onMouseEnter={e => e.target.style.color = "#c9a84c"}
+        onMouseLeave={e => e.target.style.color = "#6a6050"}
+      >&larr; Back to F1R3FLY.io</a>
+
       {/* Hero */}
       <div style={s.hero}>
         <h1 style={s.h1}>Conformal Canons</h1>
