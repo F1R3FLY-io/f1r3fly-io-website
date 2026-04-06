@@ -14,18 +14,25 @@
   function toggleMobileMenu() {
     const isOpen = overlay.classList.toggle('active');
     hamburger.setAttribute('aria-expanded', isOpen);
-    document.body.style.overflow = isOpen ? 'hidden' : '';
+    overlay.setAttribute('aria-hidden', !isOpen);
   }
 
   function closeMobileMenu() {
     overlay.classList.remove('active');
     hamburger.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
+    overlay.setAttribute('aria-hidden', 'true');
   }
 
   hamburger?.addEventListener('click', toggleMobileMenu);
   overlay?.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', closeMobileMenu);
+  });
+
+  // Close mobile menu when tapping outside
+  document.addEventListener('click', function(e) {
+    if (!overlay || !overlay.classList.contains('active')) return;
+    if (e.target.closest('.mobile-menu-panel') || e.target.closest('.hamburger')) return;
+    closeMobileMenu();
   });
 
   // --- Shared Scroll Function ---
