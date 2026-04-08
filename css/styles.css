@@ -256,13 +256,13 @@ ul { list-style: none; }
 }
 
 /* Nav Dropdowns */
-.nav-dropdown { position: relative; }
+.nav-dropdown { position: relative; padding-bottom: 10px; margin-bottom: -10px; }
 .nav-dropdown-toggle { cursor: pointer; }
 .nav-caret { font-size: 9px; margin-left: 2px; opacity: 0.6; }
 .nav-dropdown-menu {
   display: none;
   position: absolute;
-  top: calc(100% + 10px);
+  top: 100%;
   left: 50%;
   transform: translateX(-50%);
   background: rgba(10, 10, 18, 0.97);
