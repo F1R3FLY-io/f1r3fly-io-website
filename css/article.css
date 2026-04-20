@@ -75,7 +75,7 @@
 .article-subtitle a {
   color: var(--color-text-faint);
   text-decoration: underline;
-  text-decoration-color: rgba(255, 255, 255, 0.15);
+  text-decoration-color: var(--color-underline); /* a11y: raised from 0.15 — underline needs to be visible as link affordance */
   text-underline-offset: 3px;
   transition: color 0.2s ease, text-decoration-color 0.2s ease;
 }

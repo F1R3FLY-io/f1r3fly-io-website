@@ -14,6 +14,8 @@
   --color-text: #ffffff;
   --color-text-muted: #ffffff;
   --color-text-faint: rgba(255, 255, 255, 0.5);
+  --color-text-separator: rgba(255, 255, 255, 0.3); /* dividers, dots — decorative only */
+  --color-underline: rgba(255, 255, 255, 0.4);      /* link underline decoration */
   --color-white: #fff;
   --color-accent: #3FA9F5;
   --color-highlight: #F3D630;
@@ -200,7 +202,8 @@ ul { list-style: none; }
 }
 
 .nav-logo-subtitle a:hover {
-  opacity: 0.7;
+  color: var(--color-accent);
+  -webkit-text-fill-color: var(--color-accent); /* override gradient fill on hover */
 }
 
 .nav-line {
@@ -297,7 +300,7 @@ ul { list-style: none; }
 .mobile-menu .mobile-section-label {
   display: block;
   font-size: 10px;
-  color: rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.6); /* a11y: raised from 0.3 — 10px uppercase label needs AA contrast */
   text-transform: uppercase;
   letter-spacing: 0.12em;
   padding: 14px 0 2px;
@@ -759,8 +762,12 @@ h3 {
 .client-logo-grid .carousel-logo:hover {
   border-color: transparent;
   transform: scale(1.02);
-  background: var(--gradient-magenta);
 }
+/* Per-position brand gradient rotation — restored from pre-Session-8 cleanup */
+.client-logo-grid .carousel-logo:nth-child(4n+1):hover { background: var(--gradient-purple); }
+.client-logo-grid .carousel-logo:nth-child(4n+2):hover { background: var(--gradient-teal); }
+.client-logo-grid .carousel-logo:nth-child(4n+3):hover { background: var(--gradient-magenta); }
+.client-logo-grid .carousel-logo:nth-child(4n+4):hover { background: var(--gradient-green); }
 
 .client-logo-grid .carousel-logo img {
   max-width: 75%;
@@ -1038,6 +1045,23 @@ a.blog-link-card:hover .blog-read-more {
   border-style: solid;
 }
 
+/* a11y: keyboard focus indicator (WCAG 2.4.7). Only shows on keyboard nav, not mouse. */
+.form-group input:focus-visible,
+.form-group select:focus-visible,
+.form-group textarea:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Site-wide keyboard focus indicator for interactive elements */
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 .form-group textarea { min-height: 100px; resize: vertical; }
 .form-group select option { background: #111; color: var(--color-white); }
 
@@ -1090,6 +1114,14 @@ a.blog-link-card:hover .blog-read-more {
   margin-bottom: 20px;
 }
 
+/* Shared across site footer — tagline block under logo */
+.footer-tagline {
+  color: var(--color-text-faint);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
 .footer-links {
   list-style: none;
   padding: 0;
@@ -1133,7 +1165,7 @@ a.blog-link-card:hover .blog-read-more {
 }
 
 .footer-bottom p {
-  color: rgba(255,255,255,0.4);
+  color: var(--color-text-faint); /* a11y: raised from 0.4 — 13px body text needs AA contrast on neutral band */
   font-size: 13px;
 }
 
@@ -1144,7 +1176,7 @@ a.blog-link-card:hover .blog-read-more {
 }
 
 .footer-bottom-links a {
-  color: rgba(255,255,255,0.4);
+  color: var(--color-text-faint); /* a11y: raised from 0.4 — 13px link needs AA contrast on neutral band */
   text-decoration: none;
   font-size: 13px;
   transition: color 0.2s;
@@ -1153,7 +1185,7 @@ a.blog-link-card:hover .blog-read-more {
 .footer-bottom-links a:hover { color: var(--color-white); }
 
 .footer-bottom-links span {
-  color: rgba(255,255,255,0.2);
+  color: var(--color-text-separator); /* decorative separator between links */
 }
 
 @media (max-width: 768px) {
