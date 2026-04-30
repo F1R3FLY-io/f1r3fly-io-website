@@ -381,9 +381,7 @@ ul { list-style: none; }
   overflow: hidden;
 }
 
-.hero-parallax-bg,
-.hero-parallax-pines,
-.hero-parallax-branches {
+.hero-parallax-bg {
   position: absolute;
   left: 0;
   width: 100%;
@@ -400,20 +398,94 @@ ul { list-style: none; }
   z-index: var(--z-parallax-bg);
 }
 
-.hero-parallax-pines {
+/* Treeline horizon — wide trees that anchor the bottom of the hero.
+   Sit behind the corner branches but in front of the stars.
+   Fixed pixel sizes — they NEVER scale up, only down at the mobile breakpoint. */
+.hero-parallax-treeline {
+  position: absolute;
   bottom: 0;
-  height: 60%;
-  background-image: url('../images/parallax-pines.webp');
-  background-position: center bottom;
+  height: 600px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  pointer-events: none;
+  will-change: transform;
   z-index: var(--z-parallax-mid);
 }
 
+.hero-parallax-treeline-left {
+  left: 0;
+  width: 660px;
+  background-image: url('../images/parallax-treeline-left.png');
+  background-position: bottom left;
+}
+
+.hero-parallax-treeline-right {
+  right: 0;
+  width: 880px;
+  background-image: url('../images/parallax-treeline-right.png');
+  background-position: bottom right;
+}
+
+@media (max-width: 768px) {
+  .hero-parallax-treeline {
+    height: 40vh;
+  }
+  .hero-parallax-treeline-left { width: 60vw; }
+  .hero-parallax-treeline-right { width: 75vw; }
+}
+
+/* OLD single-branch system — kept commented for fast revert. Remove after new system is verified.
 .hero-parallax-branches {
-  bottom: 0;
-  height: 50%;
+  top: 35px;
+  height: 100%;
   background-image: url('../images/parallax-branches.webp');
-  background-position: center bottom;
+  background-position: center top;
+  background-size: 100% auto;
   z-index: var(--z-parallax-fg);
+  -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+}
+*/
+
+/* NEW two-branch system — independent corners, no stretching, mobile-aware.
+   Sits in front of the treeline; raised higher so it reads as foreground branches.
+   Fixed pixel sizes — NEVER scale up, only down at the mobile breakpoint. */
+.hero-parallax-branch {
+  position: absolute;
+  bottom: calc(35vh + 160px);
+  height: 480px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  pointer-events: none;
+  will-change: transform;
+  z-index: var(--z-parallax-fg);
+  -webkit-mask-image: linear-gradient(to bottom, black 65%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 65%, transparent 100%);
+  /* Tunable darkness — adjust 0.0 (black) to 1.0 (full bright) */
+  filter: brightness(1.0);
+}
+
+.hero-parallax-branch-left {
+  left: 0;
+  width: 384px;
+  background-image: url('../images/branch-left.png');
+  background-position: bottom left;
+}
+
+.hero-parallax-branch-right {
+  right: 0;
+  width: 480px;
+  background-image: url('../images/branch-right.png');
+  background-position: bottom right;
+}
+
+@media (max-width: 768px) {
+  .hero-parallax-branch {
+    height: 35vh;
+    opacity: 0.85;
+  }
+  .hero-parallax-branch-left { width: 30vw; }
+  .hero-parallax-branch-right { width: 35vw; }
 }
 
 .hero-overlay {
@@ -1359,7 +1431,7 @@ button:focus-visible,
 
 /* --- Print --- */
 @media print {
-  .site-nav, .hero-parallax-bg, .hero-parallax-pines, .hero-parallax-branches,
+  .site-nav, .hero-parallax-bg, .hero-parallax-treeline, .hero-parallax-branch,
   .hero-fireflies, .hero-overlay, .hero-bottom-fade, .hamburger,
   .mobile-menu-overlay, .mobile-menu-panel { display: none !important; }
   body { background: #fff; color: #000; }

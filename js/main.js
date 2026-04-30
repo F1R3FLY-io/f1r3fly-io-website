@@ -127,8 +127,10 @@
 
   // --- Hero Parallax ---
   const heroBg = document.getElementById('heroBg');
-  const heroPines = document.getElementById('heroPines');
-  const heroBranches = document.getElementById('heroBranches');
+  const heroTreelineLeft = document.getElementById('heroTreelineLeft');
+  const heroTreelineRight = document.getElementById('heroTreelineRight');
+  const heroBranchLeft = document.getElementById('heroBranchLeft');
+  const heroBranchRight = document.getElementById('heroBranchRight');
   const heroSection = document.querySelector('.hero');
   const fireflyCanvas = document.getElementById('fireflyCanvas');
 
@@ -141,8 +143,10 @@
           const heroH = heroSection.offsetHeight;
           if (scrollY < heroH) {
             heroBg.style.transform = `translateY(${scrollY * 0.2}px)`;
-            heroPines.style.transform = `translateY(${scrollY * 0.4}px)`;
-            heroBranches.style.transform = `translateY(${scrollY * 0.6}px)`;
+            if (heroTreelineLeft) heroTreelineLeft.style.transform = `translateY(${scrollY * 0.4}px)`;
+            if (heroTreelineRight) heroTreelineRight.style.transform = `translateY(${scrollY * 0.4}px)`;
+            if (heroBranchLeft) heroBranchLeft.style.transform = `translateY(${scrollY * 0.55}px)`;
+            if (heroBranchRight) heroBranchRight.style.transform = `translateY(${scrollY * 0.65}px)`;
             if (fireflyCanvas) fireflyCanvas.style.transform = `translateY(${scrollY * 0.5}px)`;
           }
           ticking = false;
