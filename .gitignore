@@ -5,3 +5,4 @@ generate_white_papers.py
 
 # Local backup files
 *.bak-*
+.claude/
