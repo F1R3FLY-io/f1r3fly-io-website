@@ -15,15 +15,28 @@
     const isOpen = overlay.classList.toggle('active');
     hamburger.setAttribute('aria-expanded', isOpen);
     overlay.setAttribute('aria-hidden', !isOpen);
+    if (isOpen) {
+      // a11y: move keyboard focus into the menu once it is visible.
+      const first = overlay.querySelector('a');
+      if (first) setTimeout(() => first.focus(), 50);
+    }
   }
 
-  function closeMobileMenu() {
+  function closeMobileMenu(returnFocus) {
     overlay.classList.remove('active');
     hamburger.setAttribute('aria-expanded', 'false');
     overlay.setAttribute('aria-hidden', 'true');
+    if (returnFocus) hamburger.focus();
   }
 
   hamburger?.addEventListener('click', toggleMobileMenu);
+
+  // a11y: Escape closes the open menu and returns focus to the toggle (WCAG 2.1.1).
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && overlay?.classList.contains('active')) {
+      closeMobileMenu(true);
+    }
+  });
   overlay?.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', closeMobileMenu);
   });
@@ -66,6 +79,22 @@
     });
   });
 
+  // --- Nav dropdown ARIA state + Escape (a11y, WCAG 4.1.2) ---
+  // CSS opens the menu on hover/focus-within; this mirrors that state into
+  // aria-expanded and lets Escape close it and return focus to the toggle.
+  document.querySelectorAll('.nav-dropdown').forEach(function (dd) {
+    var toggle = dd.querySelector('.nav-dropdown-toggle');
+    if (!toggle) return;
+    function setOpen(open) { toggle.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+    dd.addEventListener('mouseenter', function () { dd.classList.remove('menu-closed'); setOpen(true); });
+    dd.addEventListener('mouseleave', function () { setOpen(false); });
+    dd.addEventListener('focusin', function () { dd.classList.remove('menu-closed'); setOpen(true); });
+    dd.addEventListener('focusout', function (e) { if (!dd.contains(e.relatedTarget)) { dd.classList.remove('menu-closed'); setOpen(false); } });
+    dd.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { dd.classList.add('menu-closed'); setOpen(false); toggle.focus(); }
+    });
+  });
+
   // --- Active Nav State ---
   const sections = document.querySelectorAll('section[id]');
   const navLinks = document.querySelectorAll('.nav-links a');
@@ -91,15 +120,24 @@
   updateActiveNav();
 
   // --- FAQ Accordion ---
-  document.querySelectorAll('.faq-question').forEach(q => {
-    q.addEventListener('click', () => {
-      const item = q.parentElement;
-      const section = item.closest('.section');
-      const wasOpen = item.classList.contains('open');
-      // Close siblings in same section
-      section.querySelectorAll('.faq-accordion-item.open').forEach(i => i.classList.remove('open'));
-      if (!wasOpen) item.classList.add('open');
+  // Questions are <button aria-expanded> elements inside their <h3>, so Enter,
+  // Space and screen readers work without extra key handling. One open per section.
+  function toggleFAQ(q) {
+    var item = q.closest('.faq-accordion-item');
+    var section = item.closest('.section');
+    var wasOpen = item.classList.contains('open');
+    section.querySelectorAll('.faq-accordion-item.open').forEach(function (i) {
+      i.classList.remove('open');
+      var b = i.querySelector('.faq-question');
+      if (b) b.setAttribute('aria-expanded', 'false');
     });
+    if (!wasOpen) {
+      item.classList.add('open');
+      q.setAttribute('aria-expanded', 'true');
+    }
+  }
+  document.querySelectorAll('.faq-question').forEach(q => {
+    q.addEventListener('click', () => toggleFAQ(q));
   });
 
   // --- Scroll Reveal (Intersection Observer) ---
@@ -436,13 +474,7 @@
   // Re-bind FAQ accordion in new content
   function rebindFAQ() {
     mainEl.querySelectorAll('.faq-question').forEach(function(q) {
-      q.addEventListener('click', function() {
-        var item = q.parentElement;
-        var sec = item.closest('.section');
-        var wasOpen = item.classList.contains('open');
-        sec.querySelectorAll('.faq-accordion-item.open').forEach(function(i) { i.classList.remove('open'); });
-        if (!wasOpen) item.classList.add('open');
-      });
+      q.addEventListener('click', function() { toggleFAQ(q); });
     });
   }
 

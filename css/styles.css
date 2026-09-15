@@ -27,9 +27,9 @@
   /* Gradients */
   --gradient-brand: linear-gradient(90deg, #F3D630 0%, #8BB999 100%);
   --gradient-nav-cta: linear-gradient(90deg, #5c0269, #7b0429);
-  --gradient-developer: linear-gradient(90deg, #007BC4, #009188);
+  --gradient-developer: linear-gradient(90deg, #007BC4, #00706A); /* a11y: was #009188 (3.9:1); now 6.0:1 with white text */
   --gradient-client: linear-gradient(90deg, #5c0269, #7b0429);
-  --gradient-partner: linear-gradient(90deg, #0c8e23, #7a9d0e);
+  --gradient-partner: linear-gradient(90deg, #0c8e23, #587109); /* a11y: was #7a9d0e (3.2:1); now 5.6:1 with white text */
   --gradient-neutral: linear-gradient(90deg, #2a3441, #3d4a5c);
 
   /* Section gradients */
@@ -129,6 +129,19 @@ ul { list-style: none; }
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* --- Visually hidden (a11y): present for screen readers, not on screen --- */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* --- Skip Navigation (a11y) --- */
@@ -294,6 +307,8 @@ ul { list-style: none; }
 }
 .nav-dropdown:hover .nav-dropdown-menu,
 .nav-dropdown:focus-within .nav-dropdown-menu { display: block; }
+/* a11y: Escape closes the menu until focus leaves it (see main.js) */
+.nav-dropdown.menu-closed .nav-dropdown-menu { display: none; }
 .nav-dropdown:hover .nav-caret { opacity: 1; }
 
 /* Mobile section labels */
@@ -318,7 +333,10 @@ ul { list-style: none; }
   z-index: calc(var(--z-overlay) + 1);
   background: none;
   border: none;
-  padding: 0;
+  /* a11y: 44x44 tap target; negative margin keeps layout identical */
+  box-sizing: content-box;
+  padding: 12px 8px;
+  margin: -12px -8px;
 }
 
 .hamburger span {
@@ -338,11 +356,17 @@ ul { list-style: none; }
   max-height: 0;
   overflow: hidden;
   background: rgba(0, 0, 0, 0.97);
-  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  /* a11y: visibility:hidden removes the closed menu's links from the tab order
+     and the accessibility tree (WCAG 2.4.3). The visibility flip is delayed so
+     the slide-up animation still plays before the links disappear. */
+  visibility: hidden;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.35s;
 }
 
 .mobile-menu-panel.active {
   max-height: 600px;
+  visibility: visible;
+  transition-delay: 0s;
 }
 
 .mobile-menu {
@@ -669,6 +693,7 @@ h3 {
   border: 1px dashed var(--color-border);
   display: flex;
   flex-direction: column;
+  min-width: 0; /* a11y: grid items default to min-width:auto and grew past the viewport on phones */
 }
 
 .card .icon {
@@ -864,24 +889,30 @@ h3 {
 
 .faq-accordion-item:last-child { margin-bottom: 0; }
 
+/* a11y: each question is a real <button> inside its <h3>, so it is keyboard-
+   operable and announces expanded/collapsed state (WCAG 2.1.1, 4.1.2). */
+.faq-question-heading {
+  font-size: 18px;
+  font-weight: 400;
+  margin: 0;
+}
+
 .faq-question {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
   padding: 0 0 8px;
+  background: none;
+  border: 0;
+  font: inherit;
+  text-align: left;
+  color: var(--color-white);
   cursor: pointer;
   transition: color 0.3s ease;
 }
 
-.faq-question:hover, .faq-question:hover h3 { color: var(--color-accent); }
-
-.faq-question h3 {
-  font-size: 18px;
-  font-weight: 400;
-  color: var(--color-white);
-  margin: 0;
-  transition: color 0.3s ease;
-}
+.faq-question:hover { color: var(--color-accent); }
 
 .faq-icon {
   font-size: 24px;
@@ -1095,13 +1126,19 @@ a.blog-link-card:hover .blog-read-more {
   font-size: 16px;
 }
 
+.form-note {
+  font-size: 14px;
+  color: var(--color-text-faint);
+  margin-bottom: 16px;
+}
+
 .form-group input,
 .form-group select,
 .form-group textarea {
   width: 100%;
   padding: 10px 12px;
   background: rgba(255,255,255,0.05);
-  border: 1px dashed var(--color-border);
+  border: 1px dashed rgba(255,255,255,0.4); /* a11y: field boundary at 3.7:1 (was 0.2 = 1.7:1) */
   border-radius: 8px;
   color: var(--color-white);
   font-family: inherit;
@@ -1188,7 +1225,7 @@ button:focus-visible,
 
 /* Shared across site footer — tagline block under logo */
 .footer-tagline {
-  color: var(--color-white);
+  color: var(--color-text-faint);
   font-size: 14px;
   line-height: 1.6;
   margin-bottom: 24px;
@@ -1203,7 +1240,7 @@ button:focus-visible,
 .footer-links li { margin-bottom: 10px; }
 
 .footer-links a {
-  color: var(--color-white);
+  color: rgba(255,255,255,0.5);
   text-decoration: none;
   font-size: 14px;
   transition: color 0.2s;
@@ -1212,14 +1249,14 @@ button:focus-visible,
 .footer-links a:hover { color: var(--color-white); }
 
 .footer-address {
-  color: var(--color-white);
+  color: rgba(255,255,255,0.5);
   font-size: 14px;
   line-height: 1.6;
   margin-bottom: 8px;
 }
 
 .footer-address a {
-  color: var(--color-white);
+  color: rgba(255,255,255,0.5);
   text-decoration: none;
   transition: color 0.2s;
 }
@@ -1237,7 +1274,7 @@ button:focus-visible,
 }
 
 .footer-bottom p {
-  color: var(--color-white);
+  color: var(--color-text-faint); /* a11y: raised from 0.4 — 13px body text needs AA contrast on neutral band */
   font-size: 13px;
 }
 
@@ -1248,7 +1285,7 @@ button:focus-visible,
 }
 
 .footer-bottom-links a {
-  color: var(--color-white);
+  color: var(--color-text-faint); /* a11y: raised from 0.4 — 13px link needs AA contrast on neutral band */
   text-decoration: none;
   font-size: 13px;
   transition: color 0.2s;
@@ -1421,6 +1458,21 @@ button:focus-visible,
    ============================================ */
 @media (min-width: 1440px) {
   .section { padding: var(--space-xl) 60px; }
+}
+
+/* --- a11y: moving content can be paused (WCAG 2.2.2) --- */
+.parallax-ticker:hover,
+.parallax-ticker:focus-within { animation-play-state: paused; }
+
+/* --- a11y: on phones, long button labels wrap instead of forcing the card wider
+   than the screen (WCAG 1.4.10). Desktop keeps the single-line pill. --- */
+@media (max-width: 767px) {
+  .gradient-btn {
+    white-space: normal;
+    height: auto;
+    line-height: 1.3;
+    padding: 10px 24px;
+  }
 }
 
 /* --- Reduced Motion --- */

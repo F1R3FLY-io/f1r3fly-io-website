@@ -40,7 +40,7 @@
       <li><a href="#technology">Technology</a></li>
       <li class="nav-divider" aria-hidden="true">|</li>
       <li class="nav-dropdown">
-        <a href="#developers" class="nav-dropdown-toggle">Solutions <span class="nav-caret">&#9662;</span></a>
+        <a href="#developers" class="nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false">Solutions <span class="nav-caret">&#9662;</span></a>
         <ul class="nav-dropdown-menu">
           <li><a href="#developers">Developers</a></li>
           <li><a href="#clients">Clients</a></li>
@@ -49,7 +49,7 @@
       </li>
       <li class="nav-divider" aria-hidden="true">|</li>
       <li class="nav-dropdown">
-        <a href="#blog" class="nav-dropdown-toggle">Research <span class="nav-caret">&#9662;</span></a>
+        <a href="#blog" class="nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false">Research <span class="nav-caret">&#9662;</span></a>
         <ul class="nav-dropdown-menu">
           <li><a href="#blog">Blog</a></li>
           <li><a href="#white-papers">White Papers</a></li>
@@ -100,6 +100,7 @@
   <div class="hero-bottom-fade"></div>
 
   <div class="hero-content">
+    <h1 class="visually-hidden">F1R3FLY.IO: the AI-native execution layer for verifiable Web3 and agentic systems</h1>
     <div class="hero-logo">
       <img src="images/f1r3fly-io-vertical-logo.svg" alt="F1R3FLY.IO" loading="eager" width="200" height="178">
     </div>
@@ -248,24 +249,24 @@
     <h2 class="fly-in-header">Core Architecture</h2>
 
     <div class="faq-accordion-item">
-      <div class="faq-question"><h3>What is Rholang?</h3><span class="faq-icon" aria-hidden="true">+</span></div>
-      <div class="faq-answer-accordion">
+      <h3 class="faq-question-heading"><button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-answer-1">What is Rholang?<span class="faq-icon" aria-hidden="true">+</span></button></h3>
+      <div class="faq-answer-accordion" id="faq-answer-1">
         <p>Rholang is a concurrent smart contract language based on the rho-calculus, a formal model for communicating processes. Instead of mutating global variables, Rholang contracts send and receive messages over channels.</p>
         <p>This makes them naturally parallelizable and easier to reason about, which is a core ingredient of F1R3FLY's concurrent execution.</p>
       </div>
     </div>
 
     <div class="faq-accordion-item">
-      <div class="faq-question"><h3>How Does F1R3FLY work?</h3><span class="faq-icon" aria-hidden="true">+</span></div>
-      <div class="faq-answer-accordion">
+      <h3 class="faq-question-heading"><button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-answer-2">How Does F1R3FLY work?<span class="faq-icon" aria-hidden="true">+</span></button></h3>
+      <div class="faq-answer-accordion" id="faq-answer-2">
         <p>F1R3FLY is a validator-based execution layer that runs Rholang contracts against a shared global state. Validators execute contracts as processes, agree on results via Proof-of-Stake consensus, and record an auditable history.</p>
         <p>From your perspective, you get a familiar "blockchain trust" model; under the hood, you get a process-oriented engine rather than a single-threaded VM.</p>
       </div>
     </div>
 
     <div class="faq-accordion-item">
-      <div class="faq-question"><h3>How does F1R3FLY achieve 'linear-style' scalability without sharding?</h3><span class="faq-icon" aria-hidden="true">+</span></div>
-      <div class="faq-answer-accordion">
+      <h3 class="faq-question-heading"><button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-answer-3">How does F1R3FLY achieve 'linear-style' scalability without sharding?<span class="faq-icon" aria-hidden="true">+</span></button></h3>
+      <div class="faq-answer-accordion" id="faq-answer-3">
         <p>In most chains, every transaction must squeeze through the same global path, so adding more nodes mainly improves redundancy, not throughput. F1R3FLY uses a concurrent execution model: non-conflicting Rholang contracts can be evaluated in parallel across CPU cores and validator nodes.</p>
         <p>In realistic workloads, this lets capacity grow with available hardware instead of hitting a sequential bottleneck. The exact performance curve depends on your contracts and network topology.</p>
       </div>
@@ -274,32 +275,32 @@
     <h2>Building on F1R3FLY</h2>
 
     <div class="faq-accordion-item">
-      <div class="faq-question"><h3>How hard is it to integrate F1R3FLY into my existing stack?</h3><span class="faq-icon" aria-hidden="true">+</span></div>
-      <div class="faq-answer-accordion">
+      <h3 class="faq-question-heading"><button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-answer-4">How hard is it to integrate F1R3FLY into my existing stack?<span class="faq-icon" aria-hidden="true">+</span></button></h3>
+      <div class="faq-answer-accordion" id="faq-answer-4">
         <p>You don't have to rewrite everything to start using F1R3FLY. In most projects, F1R3FLY sits behind a service layer and communicates with your existing microservices, APIs, or event buses via adapters. You move high-value coordination logic into Rholang contracts.</p>
         <p>That gives you an incremental, low-risk adoption path instead of a "big bang" rewrite.</p>
       </div>
     </div>
 
     <div class="faq-accordion-item">
-      <div class="faq-question"><h3>How do I debug and test Rholang contracts?</h3><span class="faq-icon" aria-hidden="true">+</span></div>
-      <div class="faq-answer-accordion">
+      <h3 class="faq-question-heading"><button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-answer-5">How do I debug and test Rholang contracts?<span class="faq-icon" aria-hidden="true">+</span></button></h3>
+      <div class="faq-answer-accordion" id="faq-answer-5">
         <p>You can run validators locally, deploy contracts to a dev shard, and inspect logs and state transitions for each step of a workflow. Because contracts are modeled as processes with explicit communication patterns, you can unit-test sub-protocols in isolation.</p>
         <p>Over time, the validator toolchain is meant to feel like a modern CI/CD setup rather than a black box.</p>
       </div>
     </div>
 
     <div class="faq-accordion-item">
-      <div class="faq-question"><h3>Can I treat F1R3FLY like a normal database or message bus?</h3><span class="faq-icon" aria-hidden="true">+</span></div>
-      <div class="faq-answer-accordion">
+      <h3 class="faq-question-heading"><button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-answer-6">Can I treat F1R3FLY like a normal database or message bus?<span class="faq-icon" aria-hidden="true">+</span></button></h3>
+      <div class="faq-answer-accordion" id="faq-answer-6">
         <p>F1R3FLY is not a drop-in replacement for Postgres or Kafka, but it complements them. You use F1R3FLY when you need verifiable coordination and shared state between many parties or agents; you keep traditional databases for bulk storage.</p>
         <p>In practice, many architectures pair F1R3FLY with existing DBs and queues: contracts define the rules, while your data layer handles volume and indexing.</p>
       </div>
     </div>
 
     <div class="faq-accordion-item">
-      <div class="faq-question"><h3>How does F1R3FLY help with AI‑native or agentic systems?</h3><span class="faq-icon" aria-hidden="true">+</span></div>
-      <div class="faq-answer-accordion">
+      <h3 class="faq-question-heading"><button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-answer-7">How does F1R3FLY help with AI‑native or agentic systems?<span class="faq-icon" aria-hidden="true">+</span></button></h3>
+      <div class="faq-answer-accordion" id="faq-answer-7">
         <p>Agentic AI systems generate many concurrent actions on shared resources. F1R3FLY's Rholang model is a natural fit: each agent can be modeled as a process, and shared contracts govern how they interact with assets, permissions, or data.</p>
         <p>Validators ensure that, even when thousands of agents act simultaneously, the resulting state transitions are consistent, auditable, and replayable.</p>
       </div>
@@ -308,32 +309,32 @@
     <h2>Working with F1R3FLY</h2>
 
     <div class="faq-accordion-item">
-      <div class="faq-question"><h3>What kind of problems is F1R3FLY actually good at solving?</h3><span class="faq-icon" aria-hidden="true">+</span></div>
-      <div class="faq-answer-accordion">
+      <h3 class="faq-question-heading"><button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-answer-8">What kind of problems is F1R3FLY actually good at solving?<span class="faq-icon" aria-hidden="true">+</span></button></h3>
+      <div class="faq-answer-accordion" id="faq-answer-8">
         <p>F1R3FLY shines wherever many independent actors need to coordinate on shared state with strong guarantees: financial rails, marketplaces, AI orchestration, supply chains, and high‑trust data platforms.</p>
         <p>If you're hitting scaling limits or struggling to prove that critical workflows ran correctly, F1R3FLY helps you unify that complexity into one execution layer with an auditable history.</p>
       </div>
     </div>
 
     <div class="faq-accordion-item">
-      <div class="faq-question"><h3>How does F1R3FLY reduce my integration and operational risk?</h3><span class="faq-icon" aria-hidden="true">+</span></div>
-      <div class="faq-answer-accordion">
+      <h3 class="faq-question-heading"><button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-answer-9">How does F1R3FLY reduce my integration and operational risk?<span class="faq-icon" aria-hidden="true">+</span></button></h3>
+      <div class="faq-answer-accordion" id="faq-answer-9">
         <p>Traditional Web3 projects often rely on custom bridges and ad-hoc off‑chain logic that is hard to test or audit. F1R3FLY encourages you to move coordination logic into formally grounded contracts and interact with them via stable APIs.</p>
         <p>Validators maintain a consistent global state and an evidence trail, which makes audits and incident analysis much more manageable.</p>
       </div>
     </div>
 
     <div class="faq-accordion-item">
-      <div class="faq-question"><h3>How does F1R3FLY help with transparency, auditability, and compliance?</h3><span class="faq-icon" aria-hidden="true">+</span></div>
-      <div class="faq-answer-accordion">
+      <h3 class="faq-question-heading"><button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-answer-10">How does F1R3FLY help with transparency, auditability, and compliance?<span class="faq-icon" aria-hidden="true">+</span></button></h3>
+      <div class="faq-answer-accordion" id="faq-answer-10">
         <p>Every contract-driven state change passes through validators and becomes part of a verifiable history. You can reconstruct who did what, when, and under which contract rules, without correlating logs from half a dozen systems.</p>
         <p>For regulated industries, F1R3FLY can serve as the backbone for high-risk workflows while existing reporting systems consume the evidence.</p>
       </div>
     </div>
 
     <div class="faq-accordion-item">
-      <div class="faq-question"><h3>Do we have to "go full blockchain" to benefit from F1R3FLY?</h3><span class="faq-icon" aria-hidden="true">+</span></div>
-      <div class="faq-answer-accordion">
+      <h3 class="faq-question-heading"><button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-answer-11">Do we have to "go full blockchain" to benefit from F1R3FLY?<span class="faq-icon" aria-hidden="true">+</span></button></h3>
+      <div class="faq-answer-accordion" id="faq-answer-11">
         <p>No. Many teams start with a single high-value workflow—such as settlement, access control, or cross‑organization data sharing—while the rest of the stack stays on familiar Web2 infrastructure.</p>
         <p>As confidence grows, you can migrate more processes into Rholang or connect additional services to the same global state. This keeps risk under control while providing blockchain-level guarantees where they matter most.</p>
       </div>
@@ -342,32 +343,32 @@
     <h2>The F1R3FLY Ecosystem</h2>
 
     <div class="faq-accordion-item">
-      <div class="faq-question"><h3>What does it mean to be a F1R3FLY partner?</h3><span class="faq-icon" aria-hidden="true">+</span></div>
-      <div class="faq-answer-accordion">
+      <h3 class="faq-question-heading"><button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-answer-12">What does it mean to be a F1R3FLY partner?<span class="faq-icon" aria-hidden="true">+</span></button></h3>
+      <div class="faq-answer-accordion" id="faq-answer-12">
         <p>Partnership usually means building on, running, or extending F1R3FLY in ways that strengthen the ecosystem: infrastructure providers operating validators, integration partners connecting F1R3FLY to enterprise systems, or projects choosing F1R3FLY as their execution layer.</p>
         <p>The common thread is shared tooling, shared protocols, and shared responsibility for keeping the network healthy.</p>
       </div>
     </div>
 
     <div class="faq-accordion-item">
-      <div class="faq-question"><h3>How can infrastructure providers participate?</h3><span class="faq-icon" aria-hidden="true">+</span></div>
-      <div class="faq-answer-accordion">
+      <h3 class="faq-question-heading"><button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-answer-13">How can infrastructure providers participate?<span class="faq-icon" aria-hidden="true">+</span></button></h3>
+      <div class="faq-answer-accordion" id="faq-answer-13">
         <p>Infra partners can run validators, host managed F1R3FLY clusters, or offer observability and evidence-collection services on top of the core stack.</p>
         <p>Because F1R3FLY is built for concurrent execution on modern hardware, there is room for specialization around performance, reliability, and monitoring.</p>
       </div>
     </div>
 
     <div class="faq-accordion-item">
-      <div class="faq-question"><h3>How does F1R3FLY fit into existing L1/L2 ecosystems?</h3><span class="faq-icon" aria-hidden="true">+</span></div>
-      <div class="faq-answer-accordion">
+      <h3 class="faq-question-heading"><button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-answer-14">How does F1R3FLY fit into existing L1/L2 ecosystems?<span class="faq-icon" aria-hidden="true">+</span></button></h3>
+      <div class="faq-answer-accordion" id="faq-answer-14">
         <p>F1R3FLY is not trying to replace every chain. It's designed as a powerful execution layer that can coexist with other networks. Assets or identities can originate from existing L1/L2s, while F1R3FLY coordinates higher-level logic and real-time workflows.</p>
         <p>Integration partners can help design bridges, data pipelines, and governance that respect the guarantees of each chain, enabling ecosystems to share strengths.</p>
       </div>
     </div>
 
     <div class="faq-accordion-item">
-      <div class="faq-question"><h3>How can integrators and consulting partners build on F1R3FLY?</h3><span class="faq-icon" aria-hidden="true">+</span></div>
-      <div class="faq-answer-accordion">
+      <h3 class="faq-question-heading"><button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-answer-15">How can integrators and consulting partners build on F1R3FLY?<span class="faq-icon" aria-hidden="true">+</span></button></h3>
+      <div class="faq-answer-accordion" id="faq-answer-15">
         <p>If you design architectures or implement complex systems for clients, F1R3FLY gives you a formal yet flexible backbone. You can capture business rules in Rholang contracts, wire them into existing APIs, and provide clients with clear evidence of system behavior.</p>
         <p>As patterns repeat across engagements, you can turn them into reusable playbooks and offerings built around the F1R3FLY stack.</p>
       </div>
@@ -849,6 +850,7 @@
       <p>Whether you're exploring F1R3FLY for a new product, evaluating Rholang for an AI‑native backend, or looking for an ecosystem partnership, this is the fastest way to reach the team.</p>
 
       <div class="contact-form" style="margin-top:25px;">
+        <p class="form-note">All fields are required.</p>
         <div class="form-group">
           <label for="name">Full name</label>
           <input type="text" id="name" name="name" placeholder="Someone Wonderful" required>
@@ -925,7 +927,7 @@
 
     <!-- Column 3: Europe Office -->
     <div class="footer-col">
-      <h4 class="footer-heading">Europe Office</h4>
+      <p class="footer-heading">Europe Office</p>
       <p class="footer-address">4-5 Langham Place<br>London, W1B 3DG</p>
       <p class="footer-address"><a href="tel:+442034320078">+44 (0)203 432 0078</a></p>
       <p class="footer-address"><a href="mailto:info@f1r3fly.com">info@f1r3fly.com</a></p>
@@ -933,7 +935,7 @@
 
     <!-- Column 4: US Office -->
     <div class="footer-col">
-      <h4 class="footer-heading">US Office</h4>
+      <p class="footer-heading">US Office</p>
       <p class="footer-address">Floor 17, 521 Fifth Avenue<br>New York, NY 10175</p>
       <p class="footer-address"><a href="tel:+16464759644">+1 646 475 9644</a></p>
       <p class="footer-address"><a href="mailto:info@f1r3fly.com">info@f1r3fly.com</a></p>
@@ -946,9 +948,9 @@
     <p>&copy; 2026 F1R3FLY. All rights reserved.</p>
     <div class="footer-bottom-links">
       <a href="#">Terms of Service</a>
-      <span>&middot;</span>
+      <span aria-hidden="true">&middot;</span>
       <a href="#">Privacy Policy</a>
-      <span>&middot;</span>
+      <span aria-hidden="true">&middot;</span>
       <a href="https://f1r3fly.com" target="_blank" rel="noopener">F1R3FLY Industries</a>
     </div>
   </div>
