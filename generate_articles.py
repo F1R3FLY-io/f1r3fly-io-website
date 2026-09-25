@@ -112,8 +112,8 @@ def build(a):
   <link rel="stylesheet" href="../css/article.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@100;300;400;600;700&family=Source+Sans+3:wght@300;400;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@100;300;400;600;700&family=Source+Sans+3:wght@300;400;600;700&display=swap"></noscript>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;600;700&family=Source+Sans+3:wght@300;400;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;600;700&family=Source+Sans+3:wght@300;400;600;700&display=swap"></noscript>
 </head>
 <body>
 {NAV}
